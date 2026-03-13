@@ -1,4 +1,4 @@
-const API_BASE = ''; // Relative path for proxy
+const API_BASE = "/api"; // Relative path for proxy
 
 export const fetchVariant = async (variantId) => {
     const res = await fetch(`${API_BASE}/variant/${variantId}`);
