@@ -1,12 +1,12 @@
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
     container_name: fiocruz_elasticsearch_prod
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
       # Heap Size: 30GB is the "sweet spot" for Compressed Oops.
-      - ES_JAVA_OPTS=-Xms30g -Xmx30g
+      - ES_JAVA_OPTS=-Xms20g -Xmx25g
       - bootstrap.memory_lock=true
     ulimits:
       memlock:
@@ -52,7 +52,7 @@ services:
     container_name: fiocruz_nginx_prod
     ports:
       - "80:80"
-      # - "443:443" # Uncomment if SSL is configured
+      - "443:443" # Uncomment if SSL is configured
     depends_on:
       - app
     restart: unless-stopped
