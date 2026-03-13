@@ -24,15 +24,18 @@ def export_table(input_path: str, host: str, port: int, index: str) -> None:
     """
     # Initialize Hail with Spark configuration optimized for large datasets
     hl.init(spark_conf={
-        'spark.driver.memory': '320g',
-        'spark.executor.memory': '320g',
-        'spark.driver.maxResultSize': '100g',
-        'spark.kryoserializer.buffer.max': '2047G'
+        'spark.driver.memory': '30g',
+        'spark.executor.memory': '30g',
+        'spark.driver.maxResultSize': '4g',
+        'spark.executor.cores': '4',
+        'spark.sql.shuffle.partitions': '400',
+        'spark.kryoserializer.buffer.max': '512m'
     })
     
     print(f"Loading Hail Table from {input_path}...")
     ht = hl.read_table(input_path)
     
+    ht = ht.naive_coalesce(3000)
     # Flatten the table structure for easier indexing in Elasticsearch
     ht = ht.flatten()
     
@@ -50,7 +53,7 @@ def export_table(input_path: str, host: str, port: int, index: str) -> None:
         port=port,
         index=index,
         index_type='_doc',
-        block_size=2500,
+        block_size=100,
         config={
             "es.nodes.wan.only": "true"
         }
