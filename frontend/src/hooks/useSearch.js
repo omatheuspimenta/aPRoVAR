@@ -142,7 +142,7 @@ export const useSearch = () => {
         const qualityLabels = ['<30', '30-100', '100-500', '500-1000', '>1000'];
         const qualityDist = qualityLabels.map((label, i) => {
             const count = filteredVariants.filter(v => {
-                const q = v.quality || 0;
+                const q = v.mapping_quality || 0;
                 return q >= qualityBins[i] && q < qualityBins[i + 1];
             }).length;
             return { name: label, value: count };
@@ -191,6 +191,8 @@ export const useSearch = () => {
         currentPage,
         totalPages,
         totalVariants,
-        changePage
+        changePage,
+        currentSearchType,
+        currentQuery
     };
 };

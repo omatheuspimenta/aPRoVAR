@@ -10,52 +10,50 @@ import VariantTypeBar from './components/Charts/VariantTypeBar';
 import QualityHistogram from './components/Charts/QualityHistogram';
 import ConservationScatter from './components/Charts/ConservationScatter';
 import ConservationBar from './components/Charts/ConservationBar';
+import AboutThisProject from './components/AboutThisProject';
 import { useSearch } from './hooks/useSearch';
 
 function App() {
     const {
         rawData, filteredVariants, loading, error,
         filters, setFilters, handleSearch, stats,
-        currentPage, totalPages, changePage, totalVariants
+        currentPage, totalPages, changePage, totalVariants,
+        currentSearchType, currentQuery
     } = useSearch();
 
     const [activeTab, setActiveTab] = useState('frequency');
     const [showFilters, setShowFilters] = useState(false);
+    const [mainTab, setMainTab] = useState('home');
 
-    const handleDownload = () => {
-        if (!filteredVariants.length) return;
-        const keys = Array.from(new Set(filteredVariants.flatMap(Object.keys)));
-        const csvContent = [
-            keys.join(","),
-            ...filteredVariants.map(row => keys.map(k => {
-                let val = row[k];
-                if (val === null || val === undefined) return "";
-                if (typeof val === 'object') return `"${JSON.stringify(val).replace(/"/g, '""')}"`;
-                return `"${String(val).replace(/"/g, '""')}"`;
-            }).join(","))
-        ].join("\n");
+    const requestBody = `Hello, I would like to request data for the following search parameters:
 
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `variants_export.csv`;
-        link.click();
-    };
+Search Type: ${currentSearchType || 'N/A'}
+Search Query: ${currentQuery || 'N/A'}
+
+Filters applied:
+${JSON.stringify(filters, null, 2)}`;
 
     return (
         <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans">
-            <Header />
-            <SearchHero onSearch={handleSearch} loading={loading} />
+            <Header activeTab={mainTab} setActiveTab={setMainTab} />
 
-            <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-8">
-                {error && (
-                    <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg flex items-center gap-3 mb-8 animate-fade-in shadow-sm">
-                        <Icon name="alert-triangle" />
-                        <p className="font-medium">{error}</p>
-                    </div>
-                )}
+            {mainTab === 'home' && (
+                <>
+                    <SearchHero onSearch={handleSearch} loading={loading} />
 
-                {rawData && (
+                    <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-8">
+                        {error && (
+                            <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-lg flex items-center gap-3 mb-8 animate-fade-in shadow-sm">
+                                <Icon name="alert-triangle" />
+                                <p className="font-medium">{error}</p>
+                            </div>
+                        )}
+
+                        {!rawData && !error && !loading && (
+                            <AboutThisProject />
+                        )}
+
+                        {rawData && (
                     <div className="space-y-6 animate-fade-in">
                         {stats && (
                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -96,9 +94,12 @@ function App() {
                                     >
                                         <Icon name="filter" size={16} /> Filters
                                     </button>
-                                    <button onClick={handleDownload} disabled={!filteredVariants.length} className={`px-4 py-2 text-sm font-medium text-white rounded-lg flex items-center gap-2 shadow-sm ${!filteredVariants.length ? 'bg-slate-300 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-700'}`}>
-                                        <Icon name="download" size={16} /> Export
-                                    </button>
+                                    <a 
+                                        href={`mailto:tiago.gomes@fiocruz.br?subject=${encodeURIComponent("[DATA REQUEST] gnomAD-tb Search")}&body=${encodeURIComponent(requestBody)}`}
+                                        className={`px-4 py-2 text-sm font-medium text-white rounded-lg flex items-center gap-2 shadow-sm ${!filteredVariants.length ? 'bg-slate-300 cursor-not-allowed pointer-events-none' : 'bg-emerald-600 hover:bg-emerald-700'}`}
+                                    >
+                                        <Icon name="mail" size={16} /> Request
+                                    </a>
                                 </div>
                             </div>
 
@@ -207,7 +208,7 @@ function App() {
                                                                 <div key={i} className="flex items-center gap-2">
                                                                     <div className="w-24 text-xs font-bold text-slate-500">{d.name}</div>
                                                                     <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
-                                                                        <div className="h-full bg-amber-400" style={{ width: `${stats.count > 0 ? (d.value / stats.count) * 100 : 0}%` }}></div>
+                                                                        <div className="h-full bg-amber-400" style={{ width: `${Math.max(...stats.qualityDist.map(x => x.value)) > 0 ? (d.value / Math.max(...stats.qualityDist.map(x => x.value))) * 100 : 0}%` }}></div>
                                                                     </div>
                                                                     <div className="w-12 text-xs text-right font-mono">{d.value}</div>
                                                                 </div>
@@ -253,6 +254,57 @@ function App() {
                     </div>
                 )}
             </main>
+                </>
+            )}
+
+            {mainTab === 'about' && (
+                <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-8 animate-fade-in">
+                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 max-w-4xl mx-auto block">
+                        <h2 className="text-xl font-bold text-slate-800 mb-4">About</h2>
+                        <p className="text-slate-600 mb-4">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                        </p>
+                    </div>
+                </main>
+            )}
+
+            {mainTab === 'terms' && (
+                <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-8 animate-fade-in">
+                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 max-w-4xl mx-auto block">
+                        <h2 className="text-xl font-bold text-slate-800 mb-4">Terms of Use</h2>
+                        <p className="text-slate-600 mb-4">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris. 
+                            Vivamus hendrerit arcu sed erat molestie vehicula. Sed auctor neque eu tellus rhoncus ut eleifend nibh porttitor.
+                            Teste de texto
+                        </p>
+                    </div>
+                </main>
+            )}
+
+            {mainTab === 'download' && (
+                <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-8 animate-fade-in">
+                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 max-w-4xl mx-auto block">
+                        <h2 className="text-xl font-bold text-slate-800 mb-4">Download Data</h2>
+                        <p className="text-slate-600 mb-6 font-medium">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                        </p>
+                        <div className="bg-slate-50 p-6 rounded-lg border border-slate-200">
+                            <h3 className="text-lg font-semibold text-slate-800 mb-3">Available Datasets</h3>
+                            <ul className="list-disc list-inside text-slate-600 space-y-2 ml-2 mb-6">
+                                <li>Item 1</li>
+                                <li>Item 2</li>
+                                <li>Item 3</li>
+                            </ul>
+                            <a 
+                                href="mailto:tiago.gomes@fiocruz.br?subject=[DATA REQUEST] aPRoVAR"
+                                className="inline-block bg-brand-600 hover:bg-brand-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                            >
+                                Request Data
+                            </a>
+                        </div>
+                    </div>
+                </main>
+            )}
         </div>
     );
 }

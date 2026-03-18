@@ -58,7 +58,7 @@ def get_global_stats_query(query_conditions: Dict[str, Any]) -> Dict[str, Any]:
             # 7. Quality Histogram
             "quality_hist": {
                 "range": {
-                    "field": "quality",
+                    "field": "mapping_quality",
                     "ranges": [
                         {"to": 30, "key": "<30"},
                         {"from": 30, "to": 100, "key": "30-100"},

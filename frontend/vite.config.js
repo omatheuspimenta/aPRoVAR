@@ -6,11 +6,11 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/variant': 'http://localhost:8000',
-      '/gene': 'http://localhost:8000',
-      '/region': 'http://localhost:8000',
-      '/search': 'http://localhost:8000',
-      '/stats': 'http://localhost:8000',
+      '/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\//, '/')
+      }
     }
   }
 })
