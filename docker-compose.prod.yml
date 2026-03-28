@@ -53,6 +53,8 @@ services:
     ports:
       - "80:80"
       - "443:443" # Uncomment if SSL is configured
+    volumes:
+      - ./certs:/etc/nginx/certs
     depends_on:
       - app
     restart: unless-stopped
