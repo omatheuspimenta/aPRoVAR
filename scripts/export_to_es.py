@@ -24,12 +24,16 @@ def export_table(input_path: str, host: str, port: int, index: str) -> None:
     """
     # Initialize Hail with Spark configuration optimized for large datasets
     hl.init(spark_conf={
-        'spark.driver.memory': '30g',
-        'spark.executor.memory': '30g',
-        'spark.driver.maxResultSize': '4g',
-        'spark.executor.cores': '4',
-        'spark.sql.shuffle.partitions': '400',
-        'spark.kryoserializer.buffer.max': '512m'
+    'spark.driver.memory': '30g',
+    'spark.executor.memory': '30g',
+    'spark.driver.maxResultSize': '4g',
+    'spark.executor.cores': '4',
+    'spark.sql.shuffle.partitions': '400',
+    'spark.kryoserializer.buffer.max': '512m',
+
+    # Fix para erro de bind em ambiente Docker
+    'spark.driver.bindAddress': '0.0.0.0',
+    'spark.driver.host': '127.0.0.1'
     })
     
     print(f"Loading Hail Table from {input_path}...")
