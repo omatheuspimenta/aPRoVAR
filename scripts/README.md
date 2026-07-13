@@ -16,8 +16,8 @@ Converts Illumina Nirvana JSON annotations into a Hail Table (`.ht`).
 **Usage:**
 ```bash
 python scripts/parse_nirvana.py \
-  --json_file /path/to/nirvana.json.gz \
-  --output_path /path/to/output.ht \
+  --input /path/to/nirvana.json.gz \
+  --output /path/to/output.ht \
   --batch_size 5000
 ```
 
@@ -27,7 +27,7 @@ Exports a Hail Table to Elasticsearch.
 **Usage:**
 ```bash
 python scripts/export_to_es.py \
-  --input-path /path/to/output.ht \
+  --input /path/to/output.ht \
   --index fiocruz_variants \
   --host localhost \
   --port 9200
