@@ -67,6 +67,9 @@ HAIL_SCHEMA = {
     "mapping_quality": hl.tfloat64,
     "fisher_strand_bias": hl.tfloat64,
     "quality": hl.tfloat64,
+    # Local cohort metrics (from vcfInfo)
+    "f_missing": hl.tfloat64,
+    "af": hl.tfloat64,
     "cytogenetic_band": hl.tstr,
     # Conservation scores
     "phylop_score": hl.tfloat64,
@@ -567,6 +570,9 @@ def variant_to_dict(
         "mapping_quality": position.mappingQuality,
         "fisher_strand_bias": variant_dict.get("fisherStrandBias"),
         "quality": variant_dict.get("quality"),
+        # Local cohort metrics (from vcfInfo)
+        "f_missing": None,
+        "af": None,
         "cytogenetic_band": position.cytogeneticBand,
         "phylop_score": variant.phylopScore,
         "phylop_primate_score": variant.phyloPPrimateScore,
@@ -608,6 +614,34 @@ def variant_to_dict(
         "transcripts": [],
         "samples": None,
     }
+
+    # Extract F_MISSING and AF from vcfInfo
+    vcf_info = position.vcfInfo
+    if vcf_info:
+        # F_MISSING: single float value
+        f_missing_str = vcf_info.get("F_MISSING")
+        if f_missing_str is not None:
+            try:
+                record["f_missing"] = float(f_missing_str)
+            except (ValueError, TypeError):
+                pass
+
+        # AF: may be comma-separated for multi-allelic sites
+        # Use AF_excl if present (reprocessed variants), otherwise use AF
+        af_source = vcf_info.get("AF_excl") or vcf_info.get("AF")
+        if af_source is not None:
+            try:
+                af_values = [float(x) for x in str(af_source).split(",")]
+                # Determine which alt allele index this variant corresponds to
+                alt_index = 0
+                if position.altAlleles and variant.altAllele in position.altAlleles:
+                    alt_index = position.altAlleles.index(variant.altAllele)
+                if alt_index < len(af_values):
+                    record["af"] = af_values[alt_index]
+                elif af_values:
+                    record["af"] = af_values[0]
+            except (ValueError, TypeError):
+                pass
 
     # Extract dbSNP
     dbsnp = variant_dict.get("dbsnp", {})
@@ -924,10 +958,10 @@ def get_parser() -> argparse.ArgumentParser:
         description="Convert Illumina Nirvana JSON to Hail Table"
     )
     parser.add_argument(
-        "--json_file", type=str, required=True, help="Path to input JSON file"
+        "--input", type=str, required=True, help="Path to input JSON file"
     )
     parser.add_argument(
-        "--output_path", type=str, required=True, help="Path to output Hail Table"
+        "--output", type=str, required=True, help="Path to output Hail Table"
     )
     parser.add_argument(
         "--log_path",
@@ -993,7 +1027,7 @@ if __name__ == "__main__":
     print(f"Hail log directory: {str(log_dir)}")
 
     # check if output path directory exists, if not, create it
-    output_dir = Path(args.output_path)
+    output_dir = Path(args.output)
     output_dir.mkdir(parents=True, exist_ok=True)
     output_dir = output_dir / "variants.ht"
     output_dir_str = str(output_dir)
@@ -1013,7 +1047,7 @@ if __name__ == "__main__":
     # print("Spark master:", hl.default_reference().name)
     # print("Default parallelism:", hl.spark_context().defaultParallelism)
 
-    json_file = args.json_file
+    json_file = args.input
 
     print("=" * 60)
     print("VARIANT-LEVEL TABLE (one row per variant)")
@@ -1046,5 +1080,5 @@ if __name__ == "__main__":
     )
 
     print(
-        "Done!\nIf you wish to explore the generated Hail Table, you can use the 'test_table.ipynb' notebook."
+        "Done!"
     )

@@ -20,6 +20,7 @@ class GeneStatistics(BaseModel):
     maxAF: float
     clinvarCount: int
     pieData: List[StatItem]
+    localPieData: List[StatItem]
     popData: List[PopStat]
     variantTypeData: List[StatItem]
     qualityDist: List[StatItem]

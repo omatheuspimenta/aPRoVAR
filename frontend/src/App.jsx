@@ -112,6 +112,13 @@ ${JSON.stringify(filters, null, 2)}`;
                                             <span className="text-xs font-mono bg-white border px-2 py-1 rounded">{filters.minAF.toFixed(4)}</span>
                                         </div>
                                     </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-slate-500 uppercase">Max Missing (F_MISSING)</label>
+                                        <div className="flex items-center gap-2">
+                                            <input type="range" min="0" max="1" step="0.01" value={filters.maxFMissing} onChange={e => setFilters({ ...filters, maxFMissing: parseFloat(e.target.value) })} className="flex-1" />
+                                            <span className="text-xs font-mono bg-white border px-2 py-1 rounded">{filters.maxFMissing.toFixed(2)}</span>
+                                        </div>
+                                    </div>
                                     {['consequence', 'variantType', 'clinvar'].map(f => (
                                         <div key={f} className="space-y-2">
                                             <label className="text-xs font-bold text-slate-500 uppercase">{f.replace(/([A-Z])/g, ' $1').trim()}</label>
@@ -150,7 +157,7 @@ ${JSON.stringify(filters, null, 2)}`;
                                                         <ul className="space-y-4 text-sm text-brand-800">
                                                             <li className="flex gap-3">
                                                                 <Icon name="info" size={18} className="text-brand-500 shrink-0" />
-                                                                <span>The majority of variants ({stats.pieData[0]?.value}) fall into the <strong>{stats.pieData[0]?.name}</strong> category.</span>
+                                                                <span>The majority of variants ({stats.localPieData?.[0]?.value}) fall into the <strong>{stats.localPieData?.[0]?.name}</strong> category in Paraná.</span>
                                                             </li>
                                                             <li className="flex gap-3">
                                                                 <Icon name="alert-circle" size={18} className="text-purple-500 shrink-0" />
@@ -158,7 +165,7 @@ ${JSON.stringify(filters, null, 2)}`;
                                                             </li>
                                                             <li className="flex gap-3">
                                                                 <Icon name="trending-up" size={18} className="text-emerald-500 shrink-0" />
-                                                                <span>Max Allele Frequency observed is <strong>{(stats.maxAF * 100).toFixed(2)}%</strong>.</span>
+                                                                <span>Max Allele Frequency observed globally is <strong>{(stats.maxAF * 100).toFixed(2)}%</strong>.</span>
                                                             </li>
                                                         </ul>
                                                     </div>

@@ -48,6 +48,20 @@ def get_global_stats_query(query_conditions: Dict[str, Any]) -> Dict[str, Any]:
                 }
             },
             
+            # 5b. Local AF Ranges (Paraná cohort)
+            "local_af_ranges": {
+                "range": {
+                    "field": "af",
+                    "ranges": [
+                        {"to": 0.0001, "key": "Ultra-rare (<0.01%)"},
+                        {"from": 0.0001, "to": 0.001, "key": "Rare (0.01-0.1%)"},
+                        {"from": 0.001, "to": 0.01, "key": "Low freq (0.1-1%)"},
+                        {"from": 0.01, "to": 0.05, "key": "Common (1-5%)"},
+                        {"from": 0.05, "key": "Very common (>5%)"}
+                    ]
+                }
+            },
+            
             # 6. Population Averages
             "pop_afr": {"avg": {"field": "gnomad_afr_af"}},
             "pop_amr": {"avg": {"field": "gnomad_amr_af"}},
@@ -100,6 +114,14 @@ def format_stats_response(agg_response: Dict[str, Any], total_count: int) -> Dic
     # Sort by value desc
     pie_data.sort(key=lambda x: x['value'], reverse=True)
     
+    # Format Local Pie Data (Paraná)
+    local_pie_data = [
+        {"name": bucket['key'], "value": bucket['doc_count']}
+        for bucket in aggs['local_af_ranges']['buckets']
+        if bucket['doc_count'] > 0
+    ]
+    local_pie_data.sort(key=lambda x: x['value'], reverse=True)
+    
     # Format Population Data
     pop_data = [
         {"name": "AFR", "val": aggs['pop_afr']['value'] or 0},
@@ -135,6 +157,7 @@ def format_stats_response(agg_response: Dict[str, Any], total_count: int) -> Dic
         "maxAF": aggs['gnomad_af_stats']['max'] or 0,
         "clinvarCount": sum(b['doc_count'] for b in aggs['clinvar']['buckets']),
         "pieData": pie_data,
+        "localPieData": local_pie_data,
         "popData": pop_data,
         "variantTypeData": variant_type_data,
         "qualityDist": quality_dist,

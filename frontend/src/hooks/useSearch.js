@@ -19,7 +19,7 @@ export const useSearch = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [filters, setFilters] = useState({
-        minAF: 0, maxAF: 1, consequence: '', variantType: '', clinvar: '', rsid: '', gene: ''
+        minAF: 0, maxAF: 1, maxFMissing: 1, consequence: '', variantType: '', clinvar: '', rsid: '', gene: ''
     });
 
     // Pagination state
@@ -88,6 +88,8 @@ export const useSearch = () => {
             const geneVal = (v.gene || '').toUpperCase();
 
             if (af < filters.minAF || af > filters.maxAF) return false;
+            const fMissing = v.f_missing !== undefined && v.f_missing !== null ? v.f_missing : 0;
+            if (fMissing > filters.maxFMissing) return false;
             if (filters.consequence && !cons.includes(filters.consequence.toLowerCase())) return false;
             if (filters.variantType && !vType.includes(filters.variantType.toLowerCase())) return false;
             if (filters.clinvar && !clinvarSig.includes(filters.clinvar.toLowerCase())) return false;
@@ -124,6 +126,9 @@ export const useSearch = () => {
 
         const freqCats = countValues(filteredVariants.map(v => categorizeFrequency(v.gnomad_af)));
         const pieData = Object.entries(freqCats).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
+
+        const localFreqCats = countValues(filteredVariants.map(v => categorizeFrequency(v.af)));
+        const localPieData = Object.entries(localFreqCats).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
 
         const pops = ['gnomad_afr_af', 'gnomad_amr_af', 'gnomad_eas_af', 'gnomad_nfe_af', 'gnomad_sas_af'];
         const popData = pops.map(pop => {
@@ -174,7 +179,7 @@ export const useSearch = () => {
         return {
             count: filteredVariants.length,
             uniqueTypes: new Set(filteredVariants.map(v => v.variant_type)).size,
-            meanAF, maxAF, clinvarCount, pieData, popData, scatterData, variantTypeData, qualityDist, conservationData, coverage
+            meanAF, maxAF, clinvarCount, pieData, localPieData, popData, scatterData, variantTypeData, qualityDist, conservationData, coverage
         };
     }, [filteredVariants, rawData, totalVariants]);
 

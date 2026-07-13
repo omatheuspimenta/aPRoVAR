@@ -81,6 +81,8 @@ async def get_variant(variant_id: str):
                 "rsid": variant.get('rsid'),
                 "gnomad_af": variant.get('gnomad_af'),
                 "max_pop_af": variant.get('max_pop_af'),
+                "af": variant.get('af'),
+                "f_missing": variant.get('f_missing'),
                 # "clinvar_significance": clinvar_transform(variant.get('clinvar_significance')),
                 "clinvar_significance": variant.get('clinvar_significance'),
                 "clinvar_variant_type": variant.get('clinvar_variant_type'),

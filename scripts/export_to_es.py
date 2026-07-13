@@ -78,7 +78,7 @@ def get_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     parser.add_argument(
-        "--input-path", 
+        "--input", 
         type=str, 
         required=True, 
         help="Path to the input Hail Table"
@@ -110,7 +110,7 @@ def main() -> None:
     args = parser.parse_args()
     
     export_table(
-        input_path=args.input_path,
+        input_path=args.input,
         host=args.host,
         port=args.port,
         index=args.index

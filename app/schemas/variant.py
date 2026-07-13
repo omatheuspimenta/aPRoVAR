@@ -12,6 +12,8 @@ class VariantSummary(BaseModel):
     rsid: Optional[str] = None
     gnomad_af: Optional[float] = None
     max_pop_af: Optional[float] = None
+    af: Optional[float] = None
+    f_missing: Optional[float] = None
     clinvar_significance: Optional[str] = None
     clinvar_variant_type: Optional[str] = None
     clinvar_id: Optional[str] = None
