@@ -473,13 +473,28 @@ ${JSON.stringify(filters, null, 2)}`;
 
             {mainTab === 'terms' && (
                 <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-8 animate-fade-in">
-                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 max-w-4xl mx-auto block">
-                        <h2 className="text-xl font-bold text-slate-800 mb-4">Terms of Use</h2>
-                        <p className="text-slate-600 mb-4">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris. 
-                            Vivamus hendrerit arcu sed erat molestie vehicula. Sed auctor neque eu tellus rhoncus ut eleifend nibh porttitor.
-                            Teste de texto
+                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 max-w-4xl mx-auto space-y-6">
+                        <h2 className="text-xl font-bold text-slate-800">Terms of Use</h2>
+                        
+                        <p className="text-slate-600 leading-relaxed">
+                            Allele frequency data from aPRoVAR are made available in accordance with the Fort Lauderdale Agreement and can be freely browsed and searched. The resource is primarily intended to support targeted analyses of specific variants or variant sets, including the evaluation of candidate variants identified in research or clinical sequencing studies. Broader analyses, such as gene-based burden testing and genotype–phenotype association studies, are encouraged through academic collaboration with the aPRoVAR research group.
                         </p>
+
+                        <p className="text-slate-600 leading-relaxed">
+                            The aPRoVAR dataset is distributed under the Open Data Commons Open Database License (ODbL). Users are free to use, share, and adapt the data, provided that appropriate attribution is given to aPRoVAR in any public use or derivative work. Any publicly shared adapted datasets must remain openly accessible and be distributed under the same ODbL license.
+                        </p>
+
+                        <div className="pt-2 space-y-3">
+                            <h3 className="text-base font-semibold text-slate-800">
+                                Citation in publications:
+                            </h3>
+                            <p className="text-slate-600 leading-relaxed">
+                                We request that any use of data obtained from the aPRoVAR database cite our flagship paper.
+                            </p>
+                            <blockquote className="bg-slate-50 border-l-4 border-slate-400 p-4 rounded-r-lg text-slate-700 italic text-sm">
+                                "aPRoVAR: a public resource of whole-exome sequencing data of 1,010 admixed individuals from Paraná, an underrepresented Brazilian state" Campanário & Janke et al., 2026.
+                            </blockquote>
+                        </div>
                     </div>
                 </main>
             )}
