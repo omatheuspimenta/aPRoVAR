@@ -558,12 +558,19 @@ def variant_to_dict(
     """
     variant_dict = variant.model_dump()
 
+    # Extract ref and alt from vid if present, otherwise use position ref/alt
+    vid_parts = variant.vid.split("-") if variant.vid else []
+    vcf_ref = vid_parts[2] if len(vid_parts) >= 4 else position.refAllele
+    vcf_alt = vid_parts[3] if len(vid_parts) >= 4 else variant.altAllele
+    
     # Initialize with ALL fields from schema set to None
     record = {
         "chromosome": position.chromosome,
         "position": position.position,
-        "ref": position.refAllele,
-        "alt": variant.altAllele,
+        # "ref": position.refAllele,
+        "ref": vcf_ref,
+        # "alt": variant.altAllele,
+        "alt": vcf_alt,
         "vid": variant.vid,
         "hgvsg": variant.hgvsg,
         "variant_type": variant.variantType,
@@ -637,8 +644,10 @@ def variant_to_dict(
                 af_values = [float(x) for x in str(af_source).split(",")]
                 # Determine which alt allele index this variant corresponds to
                 alt_index = 0
-                if position.altAlleles and variant.altAllele in position.altAlleles:
-                    alt_index = position.altAlleles.index(variant.altAllele)
+                # if position.altAlleles and variant.altAllele in position.altAlleles:
+                if position.altAlleles and vcf_alt in position.altAlleles:
+                    # alt_index = position.altAlleles.index(variant.altAllele)
+                    alt_index = position.altAlleles.index(vcf_alt)
                 if alt_index < len(af_values):
                     record["af"] = af_values[alt_index]
                 elif af_values:
