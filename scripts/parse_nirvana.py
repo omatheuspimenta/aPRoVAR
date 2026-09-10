@@ -543,7 +543,7 @@ class Parser:
 
 
 def variant_to_dict(
-    position: Position, variant: Variant, include_transcripts: bool = True
+    position: Position, variant: Variant, alt_idx: int = 0, include_transcripts: bool = True
 ) -> Dict[str, Any]:
     """
     Convert a Pydantic Variant object to a dictionary for Hail.
@@ -559,9 +559,22 @@ def variant_to_dict(
     variant_dict = variant.model_dump()
 
     # Extract ref and alt from vid if present, otherwise use position ref/alt
-    vid_parts = variant.vid.split("-") if variant.vid else []
-    vcf_ref = vid_parts[2] if len(vid_parts) >= 4 else position.refAllele
-    vcf_alt = vid_parts[3] if len(vid_parts) >= 4 else variant.altAllele
+    # vid_parts = variant.vid.split("-") if variant.vid else []
+    # vcf_ref = vid_parts[2] if len(vid_parts) >= 4 else position.refAllele
+    # vcf_alt = vid_parts[3] if len(vid_parts) >= 4 else variant.altAllele
+    
+    # canonical alleles from position and alt_idx                                                                                                                                                        
+    vcf_ref = position.refAllele                                                                                                                                                                              
+    if position.altAlleles and alt_idx < len(position.altAlleles):                                                                                                                                            
+        vcf_alt = position.altAlleles[alt_idx]                                                                                                                                                                
+    else:                                                                                                                                                                                                     
+        # fallback in case alt_idx is out of bounds or altAlleles is None                                                                                                                                                     
+        vid_parts = variant.vid.split("-") if variant.vid else []                                                                                                                                             
+        vcf_alt = vid_parts[3] if len(vid_parts) >= 4 else variant.altAllele                                                                                                                                  
+                                                                                                                                                                                                                
+    # VID canonical without "chr" prefix                                                                                                                                              
+    chrom = position.chromosome.replace("chr", "")                                                                                                                                                            
+    canonical_vid = f"{chrom}-{position.position}-{vcf_ref}-{vcf_alt}"
     
     # Initialize with ALL fields from schema set to None
     record = {
@@ -571,7 +584,8 @@ def variant_to_dict(
         "ref": vcf_ref,
         # "alt": variant.altAllele,
         "alt": vcf_alt,
-        "vid": variant.vid,
+        # "vid": variant.vid,
+        "vid": canonical_vid,
         "hgvsg": variant.hgvsg,
         "variant_type": variant.variantType,
         "begin": variant.begin,
@@ -643,13 +657,14 @@ def variant_to_dict(
             try:
                 af_values = [float(x) for x in str(af_source).split(",")]
                 # Determine which alt allele index this variant corresponds to
-                alt_index = 0
+                # alt_index = 0
                 # if position.altAlleles and variant.altAllele in position.altAlleles:
-                if position.altAlleles and vcf_alt in position.altAlleles:
+                # if position.altAlleles and vcf_alt in position.altAlleles:
+                # if alt_idx < len(af_values):
                     # alt_index = position.altAlleles.index(variant.altAllele)
-                    alt_index = position.altAlleles.index(vcf_alt)
-                if alt_index < len(af_values):
-                    record["af"] = af_values[alt_index]
+                    # alt_index = position.altAlleles.index(vcf_alt)
+                if alt_idx < len(af_values):
+                    record["af"] = af_values[alt_idx]
                 elif af_values:
                     record["af"] = af_values[0]
             except (ValueError, TypeError):
@@ -832,8 +847,8 @@ def convert_to_hail(
         position = Position.model_validate(position_dict)
 
         if position.variants:
-            for variant in position.variants:
-                record = variant_to_dict(position, variant, include_transcripts=True)
+            for alt_idx, variant in enumerate(position.variants):
+                record = variant_to_dict(position, variant, alt_idx=alt_idx, include_transcripts=True)
                 # clinvar_consensus = clinvar_transform(record["clinvar_significance"])
                 # record["clinvar_significance"] = clinvar_consensus
                 batch_records.append(record)

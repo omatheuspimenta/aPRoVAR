@@ -30,7 +30,8 @@ const VariantTable = ({ variants, onVariantClick, currentPage = 1, totalPages = 
                                         onClick={() => onVariantClick(v.vid)}
                                         className="text-brand-600 hover:text-brand-800 hover:underline focus:outline-none text-left"
                                     >
-                                        {v.vid ? v.vid.replace(/-/g, ':') : ''}
+                                        {/* {v.vid ? v.vid.replace(/-/g, ':') : ''} */}
+                                        {v.vid ? v.vid.replace('-', ':') : ''}
                                     </button>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{v.rsid || '-'}</td>
