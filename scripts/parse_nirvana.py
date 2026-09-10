@@ -563,17 +563,26 @@ def variant_to_dict(
     # vcf_ref = vid_parts[2] if len(vid_parts) >= 4 else position.refAllele
     # vcf_alt = vid_parts[3] if len(vid_parts) >= 4 else variant.altAllele
     
-    # canonical alleles from position and alt_idx                                                                                                                                                        
-    vcf_ref = position.refAllele                                                                                                                                                                              
-    if position.altAlleles and alt_idx < len(position.altAlleles):                                                                                                                                            
-        vcf_alt = position.altAlleles[alt_idx]                                                                                                                                                                
-    else:                                                                                                                                                                                                     
-        # fallback in case alt_idx is out of bounds or altAlleles is None                                                                                                                                                     
-        vid_parts = variant.vid.split("-") if variant.vid else []                                                                                                                                             
-        vcf_alt = vid_parts[3] if len(vid_parts) >= 4 else variant.altAllele                                                                                                                                  
-                                                                                                                                                                                                                
-    # VID canonical without "chr" prefix                                                                                                                                              
-    chrom = position.chromosome.replace("chr", "")                                                                                                                                                            
+    # canonical alleles from position and alt_idx
+    # vcf_ref = position.refAllele
+    # if position.altAlleles and alt_idx < len(position.altAlleles):
+    #     vcf_alt = position.altAlleles[alt_idx]
+    # else:
+    #     # fallback in case alt_idx is out of bounds or altAlleles is None
+    #     vid_parts = variant.vid.split("-") if variant.vid else []
+    #     vcf_alt = vid_parts[3] if len(vid_parts) >= 4 else variant.altAllele
+    vid_parts = variant.vid.split("-") if variant.vid else []
+    if len(vid_parts) >= 4:
+        vcf_ref = vid_parts[2]
+        vcf_alt = vid_parts[3]
+    elif position.altAlleles and alt_idx < len(position.altAlleles):
+        vcf_ref = position.refAllele
+        vcf_alt = position.altAlleles[alt_idx]
+    else:
+        vcf_ref = position.refAllele
+        vcf_alt = variant.altAllele
+    # VID canonical without "chr" prefix
+    chrom = position.chromosome.replace("chr", "")
     canonical_vid = f"{chrom}-{position.position}-{vcf_ref}-{vcf_alt}"
     
     # Initialize with ALL fields from schema set to None
@@ -655,7 +664,11 @@ def variant_to_dict(
         af_source = vcf_info.get("AF_EXCL") or vcf_info.get("AF")
         if af_source is not None:
             try:
-                af_values = [float(x) for x in str(af_source).split(",")]
+                # af_values = [float(x) for x in str(af_source).split(",")]
+                if isinstance(af_source, list):
+                    af_values = [float(x) for x in af_source]
+                else:
+                    af_values = [float(x.strip()) for x in str(af_source).split(",") if x.strip()]
                 # Determine which alt allele index this variant corresponds to
                 # alt_index = 0
                 # if position.altAlleles and variant.altAllele in position.altAlleles:
@@ -663,7 +676,15 @@ def variant_to_dict(
                 # if alt_idx < len(af_values):
                     # alt_index = position.altAlleles.index(variant.altAllele)
                     # alt_index = position.altAlleles.index(vcf_alt)
-                if alt_idx < len(af_values):
+                # FInd the index of the current alt allele in the position's altAlleles list
+                alt_index = None
+                if position.altAlleles and vcf_alt in position.altAlleles:
+                    alt_index = position.altAlleles.index(vcf_alt)
+                elif alt_idx < len(af_values):
+                # Fallback to alt_idx if vcf_alt not found in position.altAlleles
+                    alt_index = alt_idx
+                # if alt_idx < len(af_values):
+                if alt_index is not None and alt_index < len(af_values):
                     record["af"] = af_values[alt_idx]
                 elif af_values:
                     record["af"] = af_values[0]
