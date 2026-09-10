@@ -415,31 +415,39 @@ ${JSON.stringify(filters, null, 2)}`;
 
                     <hr className="my-6 border-slate-200" />
                     
-                    <h3 className="text-lg font-semibold text-slate-800 mb-2">The Team</h3>
+                    <h3 className="text-lg font-semibold text-slate-800 mb-2">Contact</h3>
+                    
+                    For bug reports, feature requests, please contact:
 
                     <div className="text-slate-600 mb-6">
-                    <p>
-                        <span className="font-semibold">Faculty:</span>{" "}
-                        Prof. Fabio Passetti, PhD; Prof. Helisson Faoro, PhD; and Prof. Hellen
-                        Geremias Gatica Santos, PhD
-                    </p>
+                        <div className="text-slate-600 space-y-2 text-sm leading-relaxed">
+                            <div>
+                                <p className="text-base font-semibold text-slate-800">
+                                    Fabio Passetti, Ph.D.
+                                </p>
+                                <p className="text-slate-700 font-medium">
+                                    Laboratory of Bioinformatics and Clinical Genomics
+                                </p>
+                                <p>
+                                    Carlos Chagas Institute — Fundação Oswaldo Cruz (Fiocruz)
+                                </p>
+                            </div>
 
-                    <p>
-                        <span className="font-semibold">Cohort provided by:</span>{" "}
-                        XXX
-                    </p>
+                            <address className="not-italic text-slate-500 text-xs leading-normal pt-1">
+                                Rua Professor Algacyr Munhoz Mader, 3775<br />
+                                Curitiba - PR, Brazil<br />
+                                CEP 81310-020
+                            </address>
 
-                    <p>
-                        <span className="font-semibold">aPRoVAR leaders:</span>{" "}
-                        Marco A. Campanário, MSc; Bruno J. do Nascimento, MSc; and Tiago M. F. F.
-                        Gomes, PhD
-                    </p>
-
-                    <p>
-                        <span className="font-semibold">Technical and scientific support:</span>{" "}
-                        Matheus Henrique Pimenta-Zanon, PhD; Eduardo Martin Tarazona Santos, PhD;
-                        Michel S. Naslavsky, PhD
-                    </p>
+                            <div className="pt-2">
+                                <a 
+                                    href="mailto:fabio.passetti@fiocruz.br" 
+                                    className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+                                >
+                                    fabio.passetti@fiocruz.br
+                                </a>
+                            </div>
+                        </div>
                     </div>
 
                     <hr className="my-6 border-slate-200" />
