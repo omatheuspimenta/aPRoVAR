@@ -1089,7 +1089,7 @@ if __name__ == "__main__":
         'spark.driver.memory': '320g',
         'spark.executor.memory': '320g',
         'spark.driver.maxResultSize': '100g',
-        'spark.kryoserializer.buffer.max': '2047G'
+        'spark.kryoserializer.buffer.max': '2047m'
     }
     )
 
