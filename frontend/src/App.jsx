@@ -459,14 +459,14 @@ ${JSON.stringify(filters, null, 2)}`;
                     </span>
                     <br />
                     <span className="font-semibold not-italic">
-                        "aPRoVAR database: a public online resource of 1,010 exomes from an admixed population in Paraná, Brazil"
+                        "aPRoVAR: a public resource of whole-exome sequencing data of 1,010 admixed individuals from Paraná, an underrepresented Brazilian state"
                     </span>
                     <span className="not-italic">
-                        {" "}by Campanário & Janke
+                        {" "}by Campanário
                     </span>{" "}
                     <i>et al.</i>
                     <span className="not-italic">
-                        , 2026 (Citation Details Soon).
+                        , 2026 (Submitted).
                     </span>
                     </p>
 
@@ -497,10 +497,10 @@ ${JSON.stringify(filters, null, 2)}`;
                                 Citation in publications:
                             </h3>
                             <p className="text-slate-600 leading-relaxed">
-                                We request that any use of data obtained from the aPRoVAR database cite our flagship paper.
+                                We request that any use of data obtained from the aPRoVAR database cite our paper.
                             </p>
                             <blockquote className="bg-slate-50 border-l-4 border-slate-400 p-4 rounded-r-lg text-slate-700 italic text-sm">
-                                "aPRoVAR: a public resource of whole-exome sequencing data of 1,010 admixed individuals from Paraná, an underrepresented Brazilian state" Campanário & Janke et al., 2026.
+                                "aPRoVAR: a public resource of whole-exome sequencing data of 1,010 admixed individuals from Paraná, an underrepresented Brazilian state" Campanário <i>et al.</i>, 2026.
                             </blockquote>
                         </div>
                     </div>
