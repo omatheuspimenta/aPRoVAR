@@ -517,7 +517,6 @@ ${JSON.stringify(filters, null, 2)}`;
                             The Request data button refers specifically to the variants selected using the database filters. When submitted, the request is sent by email to the aPRoVAR team, who will review it and provide the corresponding aggregated data.
                         </p>
                         <div className="bg-slate-50 p-6 rounded-lg border border-slate-200">
-                            <h3 className="text-lg font-semibold text-slate-800 mb-3">Available Datasets</h3>
                             <a 
                                 href="mailto:tiago.gomes@fiocruz.br?subject=[DATA REQUEST] aPRoVAR"
                                 className="inline-block bg-brand-600 hover:bg-brand-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
