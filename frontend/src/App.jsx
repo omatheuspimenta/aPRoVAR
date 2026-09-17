@@ -512,15 +512,12 @@ ${JSON.stringify(filters, null, 2)}`;
                     <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 max-w-4xl mx-auto block">
                         <h2 className="text-xl font-bold text-slate-800 mb-4">Download Data</h2>
                         <p className="text-slate-600 mb-6 font-medium">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            The aPRoVAR dataset is not available for direct download. Access may be granted upon a formal and scientifically justified request, which will be evaluated by the aPRoVAR team.
+                            <br />
+                            The Request data button refers specifically to the variants selected using the database filters. When submitted, the request is sent by email to the aPRoVAR team, who will review it and provide the corresponding aggregated data.
                         </p>
                         <div className="bg-slate-50 p-6 rounded-lg border border-slate-200">
                             <h3 className="text-lg font-semibold text-slate-800 mb-3">Available Datasets</h3>
-                            <ul className="list-disc list-inside text-slate-600 space-y-2 ml-2 mb-6">
-                                <li>Item 1</li>
-                                <li>Item 2</li>
-                                <li>Item 3</li>
-                            </ul>
                             <a 
                                 href="mailto:tiago.gomes@fiocruz.br?subject=[DATA REQUEST] aPRoVAR"
                                 className="inline-block bg-brand-600 hover:bg-brand-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
