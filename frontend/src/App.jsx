@@ -485,7 +485,7 @@ ${JSON.stringify(filters, null, 2)}`;
                         <h2 className="text-xl font-bold text-slate-800">Terms of Use</h2>
                         
                         <p className="text-slate-600 leading-relaxed">
-                            Allele frequency data from aPRoVAR are made available in accordance with the Fort Lauderdale Agreement and can be freely browsed and searched. The resource is primarily intended to support targeted analyses of specific variants or variant sets, including the evaluation of candidate variants identified in research or clinical sequencing studies. Broader analyses, such as gene-based burden testing and genotype–phenotype association studies, are encouraged through academic collaboration with the aPRoVAR research group.
+                            Allele frequency data from aPRoVAR are made available in accordance with the Fort Lauderdale Agreement and can be freely browsed and searched. The resource is primarily intended to support targeted analyses of specific variants or variant sets, including the evaluation of candidate variants identified in research or clinical sequencing studies. Broader analyses, such as gene-based burden testing and genotype–phenotype association studies, are encouraged through academic collaboration with Dr. Passetti's research group.
                         </p>
 
                         <p className="text-slate-600 leading-relaxed">
